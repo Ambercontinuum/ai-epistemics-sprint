@@ -26,13 +26,16 @@ From the repository root:
 python -m unittest discover -s tests -p "test_*.py"
 ```
 
-Expect 24 tests to pass and 5 to be skipped. The five `test_stk_stack_product` integration tests need `STK_STACK_PILOT_DIR` to point at local vendored snapshots of the pinned framework sources. Those snapshots are not redistributed here.
+On a clean checkout, expect 22 tests to pass and 7 to be skipped:
+
+- The five `test_stk_stack_product` integration tests need `STK_STACK_PILOT_DIR` to point at local vendored snapshots of the pinned framework sources. Those snapshots are not redistributed here.
+- Two `test_openai_spend_guard` tests need the persistent OpenAI stop file, which lives outside this repo.
 
 ## What this repository does not let you do
 
 - **Re-run the archive pilot.** The runners read `data/private-conversation-archive/`, which is private and not included. They also require exact-bundle reviewer receipts and the PI's per-bundle authorization. The code is published for inspection, not for replay.
 - **Reach the original Qwen endpoint.** `tools/pdot_qwen_pass.py` and `tools/stk_sandbox_evaluate.py` hard-coded a private live endpoint when they ran. In the published copies, the endpoint is read from `PDOT_QWEN_ENDPOINT` instead.
-- **Match the executed source hashes.** Because of the endpoint edit and the test-skip edit, the published copies of those three files differ from the executed bytes. `MANIFEST.json` lists every published file's hash, the executed hashes from before these edits, and each edit.
+- **Match the executed source hashes.** Several published files differ from the executed bytes: two endpoint redactions, three spend-guard additions made after the runs, and test-skip edits. `MANIFEST.json` lists every published file's hash, the executed hashes from before these edits, and each edit.
 
 ## Privacy
 

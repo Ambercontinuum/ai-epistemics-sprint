@@ -1,3 +1,4 @@
+import unittest
 import sys
 import tempfile
 from pathlib import Path
@@ -6,6 +7,9 @@ from unittest.mock import patch
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
 import openai_spend_guard as guard
+
+
+STOP_FILE_PRESENT = guard.STOP_PATH.exists()
 
 
 class SpendingStopTests(TestCase):
@@ -22,10 +26,14 @@ class SpendingStopTests(TestCase):
             with patch.object(guard,'STOP_PATH',stop):
                 guard.assert_openai_allowed('Qwen','https://example.invalid/v1/chat/completions','Qwen/model')
 
+    @unittest.skipUnless(STOP_FILE_PRESENT, 'needs the persistent OpenAI stop file outside this repo (see README)')
+
     def test_persistent_actual_stop_is_present(self):
         self.assertTrue(guard.STOP_PATH.exists())
         with self.assertRaises(guard.OpenAISpendingStopped):
             guard.assert_openai_allowed('Astra','https://api.openai.com/v1/responses','gpt-6-astra')
+
+    @unittest.skipUnless(STOP_FILE_PRESENT, 'needs the persistent OpenAI stop file outside this repo (see README)')
 
     def test_all_astra_capable_runner_entrypoints_stop_before_setup(self):
         import pdot_additional_raters
