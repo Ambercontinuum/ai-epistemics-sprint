@@ -1,6 +1,7 @@
 \documentclass[11pt]{article}
 \usepackage{apart_sprint}
 \usepackage{longtable}
+\makeatletter\setlength{\@fptop}{0pt}\makeatother
 \usepackage[math-style=upright]{unicode-math}
 \setmathfont{latinmodern-math.otf}
 \begin{document}
@@ -225,6 +226,24 @@ AI systems assisted with planning, software, coordination, rating, review, and d
 \clearpage
 \section{All Archive Rater-Pair Comparisons}\label{app:allpairs}
 The ten unordered pairs among the five archive raters are reported below for every field, copying the existing aggregate values without rescoring conversations. The strict and fence-normalized variants remain separate. Only Qwen outer-fence removal changes available records. Each $n$ is the number of jointly available cases for that pair and field; unequal missingness means rows need not describe the same subset. ``Exact'' is identical scores; ``within'' is an absolute difference no greater than 0.5 on the 0--4 scale; MAD is mean absolute difference. Percentages are rounded to one decimal and MAD to two. No pooling across fields or chance correction is applied. Wonder--Qwen was designated primary after the runs; other pairs are descriptive comparisons, not a prospectively ranked hierarchy. Agreement is not an accuracy or intent-fidelity validation.
+\begin{table}[!htbp]
+\centering\small
+\caption{Per-rater mean (standard deviation) by field, strict parses. Raters scored different case subsets (Gemini 8, Wonder 10, Qwen 16, Astra 20, Fable 20), so means are not directly comparable across raters.}
+\label{tab:raterdist}
+{\setlength{\tabcolsep}{3pt}\footnotesize
+\begin{tabular}{@{}lrrrrrrrr@{}}
+\toprule
+Rater & $n$ & $\lambda$ & $\kappa$ & $\theta$ & $\epsilon$ & S. pressure & \textit{R} & $\tau$ \\
+\midrule
+Gemini & 8 & 3.56 (0.42) & 3.44 (0.56) & 2.88 (0.64) & 0.81 (0.96) & 1.25 (1.22) & 3.56 (0.42) & 0.69 (0.84) \\
+Wonder & 10 & 2.75 (0.59) & 2.25 (0.72) & 2.35 (0.71) & 2.55 (0.69) & 3.15 (0.71) & 2.70 (0.63) & 2.80 (0.48) \\
+Qwen & 16 & 2.78 (0.36) & 2.72 (0.71) & 2.69 (0.54) & 1.91 (0.86) & 2.84 (0.72) & 2.94 (0.48) & 2.09 (0.97) \\
+Astra & 20 & 2.55 (0.48) & 1.95 (0.46) & 2.02 (0.47) & 2.73 (0.47) & 3.60 (0.66) & 2.70 (0.38) & 3.10 (0.72) \\
+Fable & 20 & 2.83 (0.47) & 2.15 (0.52) & 2.12 (0.51) & 2.08 (0.52) & 2.98 (0.73) & 2.88 (0.43) & 2.25 (0.66) \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
 \begingroup
 \footnotesize
 \setlength{\tabcolsep}{3pt}
@@ -320,22 +339,5 @@ Astra--Fable & $\tau$ & 20 & 5.0 & 25.0 & 0.85 & 20 & 5.0 & 25.0 & 0.85 \\ \addl
 \end{longtable}
 \endgroup
 
-\begin{table}[!t]
-\centering\small
-\caption{Per-rater mean (standard deviation) by field, strict parses. Raters scored different case subsets (Gemini 8, Wonder 10, Qwen 16, Astra 20, Fable 20), so means are not directly comparable across raters.}
-\label{tab:raterdist}
-{\setlength{\tabcolsep}{3pt}\footnotesize
-\begin{tabular}{@{}lrrrrrrrr@{}}
-\toprule
-Rater & $n$ & $\lambda$ & $\kappa$ & $\theta$ & $\epsilon$ & S. pressure & \textit{R} & $\tau$ \\
-\midrule
-Gemini & 8 & 3.56 (0.42) & 3.44 (0.56) & 2.88 (0.64) & 0.81 (0.96) & 1.25 (1.22) & 3.56 (0.42) & 0.69 (0.84) \\
-Wonder & 10 & 2.75 (0.59) & 2.25 (0.72) & 2.35 (0.71) & 2.55 (0.69) & 3.15 (0.71) & 2.70 (0.63) & 2.80 (0.48) \\
-Qwen & 16 & 2.78 (0.36) & 2.72 (0.71) & 2.69 (0.54) & 1.91 (0.86) & 2.84 (0.72) & 2.94 (0.48) & 2.09 (0.97) \\
-Astra & 20 & 2.55 (0.48) & 1.95 (0.46) & 2.02 (0.47) & 2.73 (0.47) & 3.60 (0.66) & 2.70 (0.38) & 3.10 (0.72) \\
-Fable & 20 & 2.83 (0.47) & 2.15 (0.52) & 2.12 (0.51) & 2.08 (0.52) & 2.98 (0.73) & 2.88 (0.43) & 2.25 (0.66) \\
-\bottomrule
-\end{tabular}}
-\end{table}
 
 \end{document}
