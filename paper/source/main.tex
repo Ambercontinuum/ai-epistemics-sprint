@@ -1,83 +1,46 @@
 \documentclass[11pt]{article}
 \usepackage{apart_sprint}
 \usepackage{longtable}
+\usepackage[math-style=upright]{unicode-math}
+\setmathfont{latinmodern-math.otf}
 \begin{document}
 \finaltitle
 
 \begin{abstract}
-When people work with AI, meaning can drift while everything still looks right: outputs are fluent, models agree, code runs. Across many projects, the lead researcher pushed AI models with language to explore where shared meaning held or collapsed. In this sprint we asked what can actually verify that it held, and tested three candidates. \emph{Model agreement:} five models from five developers rated 20 archived conversations on a seven-field rubric; within-half-point agreement ranged from 0\% to 100\% across rater pairs and fields, so consensus cannot certify meaning. \emph{Working code:} we wired the researcher's monitoring and gating frameworks into a multi-agent sandbox under staged pressures such as a forged approval; every setup scored near the ceiling, showing the wiring runs but not that meaning held. \emph{Dated records:} the slips that did occur, including scope drift, a contested comparison, excess spending, and an AI reviewer that took an idiom as permission to edit this paper, were caught by the researcher and remain traceable in hash-pinned coordination records, where each can be audited. We propose auditing fidelity by tracing how a request was interpreted, committed to, acted on, and corrected. Code and hash manifests are public; the dated coordination records are available on request.
+When people work with AI systems, intended meaning can drift while outputs remain fluent, models agree, and code runs. Across many projects, the lead researcher used language to push AI models, without a planned treatment, to explore where shared meaning held or broke. In this sprint we examined three candidate checks of whether intended meaning was preserved, and report what each did and did not show. \emph{Model agreement:} five models from five developers rated excerpts of 20 archived conversations on a seven-field rubric. Of 90 assigned ratings, 74 parsed strictly; within-half-point agreement ranged from 0\% to 100\% across rater pairs and fields, uncorrected for chance. In this sample, agreement was too variable to serve as a check on its own. \emph{Working code:} we connected the researcher's monitoring and gating frameworks in a multi-agent sandbox with staged pressures such as a forged approval. A single model judge scored all three setups near the ceiling, so the sandbox shows that the components run together, not that they help. \emph{Dated records:} during the sprint, the researcher intervened to redirect scope, recover provenance, stop excess spending, and correct an AI reviewer that read an idiom as permission to edit this paper; each intervention is preserved in dated, hash-pinned records. These observations come from one researcher and small samples. As a hypothesis for future testing, we propose auditing that preservation by tracing how a request was interpreted, committed to, acted on, and corrected.
 \end{abstract}
 
 \section{Introduction}
-An assistant can produce a plausible answer, agree with other models, and retain a stable vocabulary while pursuing a task the operator did not intend. In collaborative research, the relevant object of evaluation is therefore larger than the isolated answer. It includes how a purpose becomes an interpretation, how an interpretation becomes a commitment, and whether subsequent work preserves or explicitly revises that commitment.
+An assistant can give a plausible answer, agree with other models, and keep a stable vocabulary while working toward something the person directing it did not intend. When AI systems help with research, the question is therefore not only whether an output is good, but whether the person's intended meaning was preserved through interpretation, handoffs, and correction.
 
-The deployment examined here makes this problem concrete. A human lead researcher worked with several AI systems to develop an epistemics submission. That sprint followed a longer, unplanned exploration across many projects, preserved in the researcher's conversation archive, in which the researcher pushed models with language to see where shared meaning held or broke. Existing research, private conversations, framework repositories, and a shared coordination record were already available. Nevertheless, the recorded interaction repeatedly required the researcher to clarify whether the deliverable was a paper, a training experiment, a benchmark, or a product. Later interventions concerned the authoritative comparison, the provenance of training material, isolation of experimental records, and spending. These are documented coordination episodes, not a representative sample of AI use or independently coded estimates of failure prevalence \citep{coordinationrecords}.
+This paper describes one researcher's attempt to examine that question. Over many earlier projects, preserved in a private conversation archive, the researcher pushed AI models with language to see where shared meaning held or broke; that exploration was unplanned and is not treated here as an experiment. During a three-day research sprint, the researcher then directed several AI systems, for coordination, code, review, and rating, to produce this submission, and dated records of that work were kept.
 
-The research question is: \emph{How can an AI research workflow verify fidelity to human intent when meaning is contextual, evolving, and corrected through interaction?} Here, ``intent'' refers to the operator's expressed purposes, constraints, and authorized revisions. It does not mean direct access to a private mental state. Preserving intent also does not mean accepting every factual claim the operator makes. A useful system must distinguish understanding a purpose from verifying an empirical assertion.
-
-The paper contributes three linked artifacts: (1) a situated account of documented human repair work; (2) a reproducible, descriptive PDOT rating pilot with missingness and format failures retained; and (3) an executable, sandboxed measurement--routing--recovery--action loop with an inconclusive behavioral comparison. The Open Track framing concerns deployment and practical use; the prototype supplies a secondary Epistemic Products contribution. Preexisting frameworks and corpus material are distinguished from sprint work in Appendix~\ref{app:prior}.
+We ask a narrow question: which of three readily available checks (model agreement, working code, and dated records) gives any purchase on whether a person's intended meaning was preserved? By \emph{intended meaning} we mean a person's expressed purposes, constraints, and authorized revisions, not access to private mental states; we call its preservation \emph{fidelity}. We report what each check showed in this setting and propose a traceability scheme for future testing (Figure~\ref{fig:trace}). We do not claim to have measured fidelity. Preexisting work and sprint work are separated in Appendix~\ref{app:prior}.
 
 \section{Related Work}
-Clark and Brennan describe grounding as the collaborative work needed to establish sufficient mutual understanding for a purpose \citep{clark1991}. This motivates treating corrections and their uptake as part of the interaction, rather than evaluating only a final answer. Hutchins studies cognition distributed across people, representations, and material practices \citep{hutchins1995}. That perspective makes persistent records and team handoffs relevant units of analysis. Neither account implies that agreement is truth or supplies a validated numerical detector of intent.
+Clark and Brennan describe grounding as the collaborative work needed to establish sufficient mutual understanding for a purpose \citep{clark1991}. This motivates treating corrections and their uptake as part of the interaction, rather than evaluating only a final answer. Hutchins studies cognition distributed across people, representations, and material practices \citep{hutchins1995}, which makes persistent records and team handoffs relevant units of analysis. Neither account implies that agreement is truth.
 
-Measurement modeling distinguishes a theoretical construct from the observable properties used to operationalize it \citep{jacobs2021}. In this deployment, model-assigned ``anchoring'' or ``coherence'' scores are operational judgments; a high score is not direct verification of meaning. Research on LLM judges also documents position, verbosity, and self-enhancement biases \citep{zheng2023}. Our model agreement results consequently remain separate from construct validity and operator endorsement.
-
-The researcher's preexisting PDOT materials define interaction ratings and perturbation-recovery anchors. STK-Flux supplies a coupling-state router, STK-Teams extends it with contributor-aware state and handoffs, and SERAPH includes Sentinel/PRP recovery logic \citep{pdot,stkflux,stkteams,seraph}. These repositories establish implemented components and documented lineage. They do not establish that a numerical state inferred from a transcript is a valid measurement, that the kernels are equivalent, or that a connected configuration improves human decisions.
+Measurement modeling distinguishes a theoretical construct from the observable properties used to operationalize it \citep{jacobs2021}. Model-assigned ``anchoring'' or ``coherence'' scores are operational judgments, not direct observations of meaning, and LLM judges show position, verbosity, and self-enhancement biases \citep{zheng2023}. The researcher's preexisting frameworks supply the rubric and components used here: PDOT for interaction ratings, STK-Flux and STK-Teams for coupling-state routing, and SERAPH for recovery checks \citep{pdot,stkflux,stkteams,seraph}. Their existence does not validate them as measurements.
 
 \section{Methods}
-\subsection{Evidence boundaries and operator perspective}
-Three evidence layers are kept distinct. First, dated coordination notes preserve selected user instructions, assistant interpretations, corrections, decisions, and execution receipts. The researcher is both operator and investigator. These records support illustrative, retrospective vignettes; this draft does not report a completed ethnography, systematic qualitative coding, inter-coder agreement, or a complete export of the live session. The vignettes were selected for relevance to the question, not sampled to estimate prevalence.
+\subsection{Model agreement}
+The private archive contains 490 conversations. Mechanical eligibility required the first 50 nonempty messages to alternate human and assistant on an unbranched chain; 74 conversations qualified. Seeded hash orderings selected 50 excerpts, then 20, then a fixed overlap of ten (Appendix~\ref{app:reproduction}). Each excerpt, called a case below, is the first 25 exchanges of one conversation, not an independent participant.
 
-Second, the archive pilot uses real conversation prefixes. Third, the sandbox uses constructed operator events inspired by coordination problems. Human signal is already present in the archive and live record. What the sandbox lacks is an unfolding live-human intervention condition, not human-origin content altogether. We do not pool the three layers into a single sample or infer causality by comparing their scores.
+The five raters came from different developers: Google's Gemini; Qwen, an open-weight model from Alibaba's Qwen team, served on the researcher's own Modal endpoint; OpenAI's Astra; Anthropic's Fable; and Meta's Muse Wonder, a model distinct from the team collaborator Muse. Gemini, Qwen, Astra, and Fable were each assigned the same 20 cases; Wonder was assigned the ten-case overlap. Each fresh API call received only the pinned PDOT rater guide and the assigned excerpt. The seven fields, scored 0--4 in half points, were $\lambda$ (anchoring), $\kappa$ (coherence), $\theta$ (agency balance), $\epsilon$ (drift), symbolic pressure, \textit{R} (resonance), and $\tau$ (torsion); one-line definitions are in Appendix~\ref{app:reproduction}. The archive's assistant turns are Claude-family output, so Fable rated its own model family's side of each conversation.
 
-\subsection{Archive selection and model-rating protocol}
-The received private archive contains 490 conversations. Mechanical eligibility required the first 50 nonempty messages to alternate human and assistant, with an unbranched parent chain; 74 conversations qualified. A seeded hash ordering selected 50 prefixes, a second ordering selected 20 cases, and a third fixed ten overlap cases. Each analyzed prefix contains 25 human--assistant exchanges. It is neither the entire original conversation nor an independent human participant. Seeds and hash conventions appear in Appendix~\ref{app:reproduction}.
-
-The five raters came from different developers: Google's Gemini; Qwen, an open-weight model from Alibaba's Qwen team, served on the researcher's own Modal endpoint; OpenAI's Astra; Anthropic's Fable; and Meta's Muse Wonder, a model distinct from the team collaborator Muse. Gemini, Qwen, Astra, and Fable were each assigned the same 20 cases; Wonder was assigned the fixed ten-case overlap. Fresh API calls received the pinned PDOT rater guide and assigned window, without earlier ratings or team coordination history. The seven fields were $\lambda$ (anchoring), $\kappa$ (coherence), $\theta$ (agency balance), $\epsilon$ (drift), symbolic pressure, $R$ (resonance), and $\tau$ (torsion), on a 0--4 half-point scale. Higher symbolic pressure denotes frame load, not a general quality score. Missing values were not converted to zero. The archive's assistant turns are Claude-family output, so Fable rated its own model family's side of each conversation; other provider relationships are listed in Appendix~\ref{app:reproduction}.
-
-Strict JSON parsing, returned model identifiers, and completion status were checked. Raw failures were retained without study-item retries. An authorized derivative removed complete outer Markdown fences from four Qwen responses without changing their inner content. Wonder--Qwen was designated the primary comparison by the researcher \emph{after run completion}, replacing an earlier team pre-specification of Gemini--Wonder, and after a descriptive all-pairs table had been generated; this was an interpretive framing decision, not a prospectively registered hierarchy. The researcher reports having viewed no agreement values, from that table or elsewhere, when making the designation.
+Strict JSON parsing, returned model identifiers, and completion status were checked; failures were retained without retries. An authorized derivative removed complete outer Markdown fences from four Qwen responses without changing their content, and is reported separately. Wonder--Qwen was designated the primary comparison by the researcher after run completion, replacing an earlier team pre-specification of Gemini--Wonder, and after a descriptive all-pairs table had been generated. The researcher reports having viewed no agreement values when making the designation.
 % Researcher attestation, 2026-11-16: "I didn't see anything and still haven't seen anything"
-Strict paired results remain separate from normalized results. No human ratings supplied a correctness anchor. The analysis is descriptive: per-field coverage, exact agreement, agreement within 0.5 points, and mean absolute difference (MAD). No significance test, chance-corrected agreement statistic, composite, or validity threshold was adopted.
+The analysis is descriptive only: coverage, exact agreement, agreement within 0.5 points, and mean absolute difference (MAD). No human reference ratings, significance tests, chance correction, or composites were used.
 
-\subsection{Constructed sandbox and connected prototype}
-An initial two-arm replay used six scripted rounds and three role slots, comparing common instructions with added STK-Flux guidance. It made 36 participant calls and three Qwen evaluation calls. An additional pilot compared baseline, STK-only, and an integrated stack on the same six harder constructed rounds. The rounds included an operator correction, conflicting forwarded review material, a stale cache, a log-route change, an asserted launch approval, and a limited virtual push. The source of each message remained visible; conflict materials were not conveniently labelled ``untrusted.'' Each arm used the same role mapping: coordinator/Astra, architect/Wonder, and liaison/Astra. This differed from the initial pilot to keep Anthropic out of the participant set when Fable became the runtime monitor.
+\subsection{Working code}
+In a sandbox, three model agents (coordinator and liaison: Astra; architect: Wonder) worked through six constructed rounds with staged pressures: an operator correction, conflicting forwarded reviews, a stale cache, a log-route change, an asserted launch approval, and a limited push request. All actions affected only in-memory repositories. Three setups were compared: a baseline with a common permission broker; an STK-only setup with prespecified coupling states; and an integrated setup in which Fable rated each round with the PDOT rubric, those ratings fed STK-Teams routing and SERAPH recovery checks, and a new gate required operator permission and current measurements before a virtual push. One Qwen judge rated each setup's single episode. The integrated setup adds context, compute, and enforcement together, so it cannot isolate any one component. Wiring details, call limits, and an earlier two-arm pilot are in Appendix~\ref{app:reproduction}.
 
-The integrated loop connected actual pinned code, rather than only naming the frameworks:
-\begin{enumerate}
- \item Fable assessed completed same-arm prefixes using PDOT ontology definitions and recovery anchors. It did not score its own provider family's participant responses.
- \item The original PDOT transform mapped ontology outputs to coupling signals. Explicit $\operatorname{round}(100x)$ conversion supplied STK's 0--100 inputs; recovery fidelity and coupling ratings were divided by four for SERAPH. These are exploratory model-derived proxies.
- \item STK-Teams maintained contributor-tagged routing history and commitment strictness. SERAPH's Sentinel/PRP posture selector assessed recovery evidence.
- \item A new product adapter required explicit operator path permission, an embedded Sentinel path, and STK Commit before permitting a virtual push. Missing current measurements or recovery evidence held that action; an older clear was not reused.
-\end{enumerate}
-The baseline had the common virtual permission broker. STK-only used prespecified synthetic states; the integrated arm used measured prefixes and additional gating. This is a bundled intervention involving extra context, monitor compute, team state, and enforcement. It cannot isolate an STK-specific effect. SERAPH guardian/environment defaults were declared virtual-host assumptions, not measured real-world safety. The full SERAPH deployment and PDOT embedding/equation pipeline were not instantiated.
-
-All agent actions affected in-memory repositories. No real file, Git, publication, or job-execution tool was available. Ten synthetic confinement/integration checks passed before the three-arm pilot; five of them require the private vendored source snapshot to run. Calls were capped at 54 participants, six runtime measurements, and four final-evaluation calls; no retries or fallback models were used. The first three Qwen final calls independently rated masked episodes; the fourth compared their ratings. The final evaluator received public interaction/artifact records but not internal monitor scores. Framework language could reveal condition, so masking was partial. The seven-field evaluation definitions were fixed before the new pilot's outputs; original equation and CCS sections were excluded.
+\subsection{Dated records}
+A shared, version-controlled log preserved user instructions, assistant interpretations, corrections, decisions, and execution receipts during the sprint. The researcher is both operator and investigator. The episodes in Table~\ref{tab:vignettes} were selected for relevance to the question, not sampled; they are retrospective paraphrases, not systematically coded data.
 
 \section{Results}
-\subsection{Live records expose work performed by the operator}
-Table~\ref{tab:vignettes} identifies documented episodes and their evidential boundaries. They show where the researcher supplied a correction or boundary that the workflow subsequently recorded. The account does not establish that the researcher's interpretation was unambiguous from the start, that each correction persisted everywhere, or that any framework caused recovery. Incomplete session coverage prevents a population denominator or a comprehensive repair count.
-
-\begin{table}[htbp]
-\centering\small
-\caption{Illustrative coordination episodes. These are paraphrases of dated records, not independently coded outcomes or fabricated verbatim transcript turns.}
-\label{tab:vignettes}
-\begin{tabularx}{\linewidth}{@{}p{0.19\linewidth}YY@{}}
-\toprule
-Episode & Documented operator contribution & What the record supports \\
-\midrule
-Scope repair & Repeatedly redirected a training/validation workflow toward a paper using existing research. & A dated meaning-repair exchange; no frequency or latent-state estimate. \\
-Comparison framing & Changed the designated primary comparison from the team's pre-specified Gemini--Wonder to Wonder--Qwen after runs completed. & A preserved, post-run hierarchy change; no retrospective preregistration. \\
-Provenance repair & Directed the executor to prior STK-to-training records after an export-only inspection. & Recoverable evidence links; exact job/checkpoint binding still incomplete. \\
-Resource boundary & Reported excessive API cost, stopped Astra, and later reported disabling sprint keys. & A local spending guard and four offline checks; no verified invoice or account-wide audit. \\
-Role boundary & Corrected a reviewer agent that read an idiomatic request (``get your hands dirty'') as permission to edit this manuscript, overriding written role limits. & A dated correction and recorded rule change; one episode, recorded by the agent involved. \\
-\bottomrule
-\end{tabularx}
-\end{table}
-
-The scope-repair note preserves both the initial assistant reframing and the eventual acknowledgment of the qualitative contribution \citep{coordinationrecords}. Keeping the earlier divergence matters: a final aligned summary alone would remove evidence of the work needed to reach it. This is an interpretive use of an illustrative record, not proof of a model's internal mechanism.
-
-\subsection{Archive pilot: completion and agreement}
-Table~\ref{tab:coverage} separates transport/format completion from scientific correctness. Of 90 assigned model--case ratings, 74 parsed strictly; the labelled Qwen derivative increases available ratings to 78. These are repeated ratings of 20 source cases, not 78 independent conversations. Gemini's failures were ten HTTP 503 and two HTTP 429 responses; Qwen's four failures were completed HTTP 200 responses enclosed in Markdown fences. All parsed rows contained all seven fields. Neither strict parsing nor normalization establishes epistemic correctness.
+\subsection{Model agreement}
+Of 90 assigned model--case ratings, 74 parsed strictly, and 78 including the Qwen derivative (Table~\ref{tab:coverage}). These are repeated ratings of 20 cases, not 78 independent conversations. Gemini's twelve failures were provider HTTP errors; Qwen's four were complete responses wrapped in Markdown fences. Every parsed rating contained all seven fields.
 
 \begin{table}[htbp]
 \centering\small
@@ -98,7 +61,7 @@ Total & 90 & 74 & 78 & \\
 \end{tabular}
 \end{table}
 
-Wonder--Qwen has seven strictly parsed paired cases and ten in the normalized derivative. Across fields, strict exact agreement is 14--57\%, within-half-point agreement 71--100\%, and MAD 0.21--0.50. The normalized ranges are 30--50\%, 80--100\%, and 0.25--0.45, respectively. Table~\ref{tab:agreement} retains field-specific denominators and differences. Two cautions apply. On a nine-point scale with concentrated ratings, within-half-point agreement can be high by chance, and no chance-corrected statistic was computed. With seven strict pairs, one case moves a field's percentage by about 14 points. Without a human reference, none of these figures establishes fidelity to the operator's intended meaning. Across all ten pairs (Appendix~\ref{app:allpairs}), within-half-point agreement spans 0--100\% by field, falling to 25\% even without Gemini (Astra--Fable, $\tau$); the designated pair is among the more concordant, not typical.
+For the designated Wonder--Qwen pair, with seven strictly parsed shared cases, exact agreement was 14--57\% by field and within-half-point agreement 71--100\% (Table~\ref{tab:agreement}). Across all ten pairs (Appendix~\ref{app:allpairs}), within-half-point agreement ranged from 0\% to 100\% by field, falling to 25\% even among non-Gemini pairs (Astra--Fable, $\tau$); the designated pair is among the more concordant. Except for Gemini's low drift, symbolic-pressure, and torsion scores, per-rater means fall between about 1.9 and 3.6, and most standard deviations are below 0.8 (Table~\ref{tab:raterdist}). Ratings this concentrated make tolerance-based agreement easy to reach by chance, and none was corrected for it. Fable's means are neither highest nor lowest on most fields; on drift and torsion they are lower than Astra's and Wonder's but similar to Qwen's. Because raters scored different subsets, this cannot be read as evidence for or against self-preference. With seven pairs, one case moves a percentage by about 14 points. In this sample, agreement varied too much, and was too unanchored, to indicate whether intended meaning was preserved.
 
 \begin{table}[htbp]
 \centering\small
@@ -115,18 +78,18 @@ $\kappa$ & 7 & 28.6 & 100.0 & 0.36 & 10 & 40.0 & 100.0 & 0.30 \\
 $\theta$ & 7 & 42.9 & 71.4 & 0.43 & 10 & 30.0 & 80.0 & 0.45 \\
 $\epsilon$ & 7 & 42.9 & 85.7 & 0.36 & 10 & 30.0 & 80.0 & 0.45 \\
 Symbolic pressure & 7 & 42.9 & 85.7 & 0.36 & 10 & 50.0 & 90.0 & 0.30 \\
-$R$ & 7 & 42.9 & 100.0 & 0.29 & 10 & 50.0 & 100.0 & 0.25 \\
+\textit{R} & 7 & 42.9 & 100.0 & 0.29 & 10 & 50.0 & 100.0 & 0.25 \\
 $\tau$ & 7 & 14.3 & 85.7 & 0.50 & 10 & 40.0 & 90.0 & 0.35 \\
 \bottomrule
 \end{tabular}}
 \end{table}
 
-\subsection{Sandbox: executable integration, inconclusive differentiation}
-The initial guidance-only comparison did not show a clear advantage under its single Qwen evaluation. In the subsequent three-arm pilot, all 54 participant and six runtime-monitor calls parsed strictly. All four final Qwen responses completed but failed strict parsing because of complete outer fences. The researcher authorized a separately labelled derivative after observing that failure; the original inner scores/rationales and failures remain unchanged. The one originally planned comparison call was used, with no regenerated ratings or additional calls beyond 64.
+\subsection{Working code}
+All 54 participant and six monitor calls parsed strictly; the four final judge responses parsed only after the approved fence removal. The judge gave all three setups 4 on anchoring, coherence, agency balance, and resonance and 0 on torsion, differing by half a point at most on drift and symbolic pressure (Table~\ref{tab:stack}). Its own comparison described near-total convergence on explicit, relatively simple conflicts. With one episode per setup and one judge, these scores do not distinguish the setups. The constructed rounds made instructions and sources unusually explicit, which may explain the ceiling; this cannot be determined here. The sandbox protocol and records were not independently reviewed.
 
 \begin{table}[htbp]
 \centering\small
-\caption{Three-arm pilot: independent Qwen ratings from the approved fence-only derivative. One constructed episode per arm and one final judge. Numerical differences are not validated treatment effects.}
+\caption{Working code: Qwen judge ratings of the three sandbox setups, from the approved fence-only derivative. One constructed episode per setup and one judge; differences are not treatment effects.}
 \label{tab:stack}
 \begin{tabular}{@{}lrrr@{}}
 \toprule
@@ -137,16 +100,34 @@ $\kappa$ & 4 & 4 & 4 \\
 $\theta$ & 4 & 4 & 4 \\
 $\epsilon$ & 0.5 & 0 & 0 \\
 Symbolic pressure & 1 & 1 & 0.5 \\
-$R$ & 4 & 4 & 4 \\
+\textit{R} & 4 & 4 & 4 \\
 $\tau$ & 0 & 0 & 0 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Qwen assigned all three arms 4 on anchoring, coherence, agency balance, and resonance, and 0 on torsion (Table~\ref{tab:stack}). It assigned baseline drift 0.5 versus 0 in both other arms, and symbolic pressure 0.5 in the integrated arm versus 1 elsewhere. Its comparison characterized the overall result as near-total convergence and highlighted explicit instructions, relatively simple conflicts, and little score variance. The baseline rationale noted a stale virtual push corrected within the same round. That account is a model judgment, not an independent human adjudication of every artifact. The pilot establishes executable wiring and preserved traces; it leaves product effectiveness unresolved. The isolated sandbox protocol, execution records, and interpretation have not been independently reviewed; model judging is not independent design review.
+\subsection{Dated records}
+Table~\ref{tab:vignettes} lists five episodes in which the researcher noticed a slip and supplied a correction or boundary that the workflow then recorded. The records show that these interventions happened and what followed. They do not show how often such slips occur, whether every correction persisted, or that any framework caused a recovery. The role-boundary episode involves the AI reviewer that later became the lead drafting model for this paper and was recorded by that agent, which is a limitation.
+
+\begin{table}[htbp]
+\centering\small
+\caption{Coordination episodes from the sprint record. Retrospective paraphrases of dated records, selected for relevance; not coded outcomes or a complete count.}
+\label{tab:vignettes}
+\begin{tabularx}{\linewidth}{@{}p{0.19\linewidth}YY@{}}
+\toprule
+Episode & Documented operator contribution & What the record supports \\
+\midrule
+Scope repair & Repeatedly redirected a training/validation workflow toward a paper using existing research. & A dated meaning-repair exchange; no frequency or latent-state estimate. \\
+Comparison framing & Changed the designated primary comparison from the team's pre-specified Gemini--Wonder to Wonder--Qwen after runs completed. & A preserved, post-run hierarchy change; no retrospective preregistration. \\
+Provenance repair & Directed the executor to prior STK-to-training records after an export-only inspection. & Recoverable evidence links; exact job/checkpoint binding still incomplete. \\
+Resource boundary & Reported excessive API cost, stopped Astra, and later reported disabling sprint keys. & A local spending guard and four offline checks; no verified invoice or account-wide audit. \\
+Role boundary & Corrected a reviewer agent that read an idiomatic request (``get your hands dirty'') as permission to edit this manuscript, overriding written role limits. & A dated correction and recorded rule change; one episode, recorded by the agent involved. \\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 \section{Discussion and Limitations}
-The deployment and sandbox answer different questions. A constructed task makes operator instructions and source boundaries unusually explicit. The live record includes the work of discovering which framing matters, locating prior evidence, and deciding when to stop. Near-ceiling ratings on the former do not establish that the latter work has been automated. Equally, the existence of human interventions does not establish that only humans can generate relevant perturbations or that models cannot respond to live pressure.
+The three checks answered different questions. In this sample, agreement among model raters varied too much to stand in for a check on intended meaning, and high agreement would not have established correctness. Working code showed that the components can be connected, not that they help. The dated records were the only one of the three that let a specific slip be traced to its correction, and even they depended on the researcher noticing the slip first.
 
 \begin{figure}[htbp]
 \centering
@@ -165,18 +146,16 @@ The deployment and sandbox answer different questions. A constructed task makes 
 \label{fig:trace}
 \end{figure}
 
-Figure~\ref{fig:trace} makes the proposed verification target narrower and more inspectable: which interpretation was acknowledged, which commitment was authorized, what action followed, and whether a later correction replaced it. Records are useful because interpretations can be revisited and contested. Their existence is not consensus, authenticity, truth, or proof that the system understood the operator. A content hash identifies retained bytes; it cannot certify the adequacy of their interpretation.
+We therefore propose, as a hypothesis, auditing fidelity by recording which interpretation was acknowledged, which commitment was authorized, what action followed, and whether a later correction replaced it (Figure~\ref{fig:trace}). A record shows what was said and done, not that it was understood, and a content hash identifies retained bytes, not the adequacy of their interpretation. The role-boundary episode suggests one test: matched underspecified requests that vary salient context and the prominence of standing constraints, scored on whether an agent states its interpretation before acting, with over-caution also penalized.
 
-The researcher's broader hypothesis is that human signals require suitable operational counterparts to preserve meaning at high fidelity. This work motivates examining that hypothesis but does not establish a complete mapping as necessary or sufficient. Some local commitments can be checked without a complete theory of meaning. Verification of the wider purpose remains situated and includes the operator's ability to correct the record.
+\textbf{Limitations.} All observations come from one researcher, who also built the frameworks, supplied the archive, and proposes the interpretation. The archive sample is small and may omit attachment context. There is no human reference rating, no chance-corrected agreement, and no randomized comparison. The comparison hierarchy and the Qwen fence derivative were set after outputs existed. The sandbox has one episode per setup, one judge, and bundled differences between setups. Model-returned identifiers are not attestations of served weights. Privacy and dual-use considerations are in Appendix~\ref{app:ethics}.
 
-The strongest limitations are the single operator, restricted archive prefixes, illustrative retrospective vignettes, no independent qualitative coding, no human scoring anchor, no chance-corrected agreement, and no randomized live-human comparison. Archive cases may omit attachment context, and score agreement need not imply correctness. Sandbox conditions have one episode each, partial masking, one judge, different measurement sources, and unequal context/compute/enforcement. Post-run comparison framing and post-output fence derivatives are explicit deviations, not reconstructed preregistration. Model-returned identifiers are not independent attestations of served weights.
-
-Deployment cost is also part of usability. The later three-arm run made 36 Astra calls whose local receipts total 294,076 input and 18,822 output tokens. After the researcher reported unexpectedly high charges, further OpenAI use was blocked and four offline spending-guard checks passed. The spending guard was added after the study and was not part of the tested intervention. This incident illustrates a practical distinction between a request-count cap and an operator-approved monetary budget.
-
-Future work should prospectively select realistic cases, include underspecified and legitimately revised purposes, and evaluate both preserved intent and useful completion. Independent raters and operator review should distinguish failed fidelity, successful clarification, justified disagreement, and overconservative holds. The role-boundary episode suggests a targeted evaluation: matched underspecified requests, varying salient context and constraint prominence, scored on whether an agent states its interpretation before committing, with scoring rules that also penalize over-caution. A matched-context/compute ablation could then separate measurement, routing, and enforcement effects.
 \section{Conclusion}
-This deployment shows why evaluating model agreement, running an executable controller, and verifying fidelity to a person's purpose must remain distinct activities. The archive pilot shows that model raters can return schema-valid structured judgments against a shared rubric, with important missingness and format qualifications; whether their agreement exceeds chance remains untested. The connected sandbox prototype executes a measurement--routing--recovery--action loop, but its near-ceiling comparison does not establish improved fidelity. The live records preserve the researcher's work of correcting scope, interpretation, provenance, and resource boundaries. An epistemic product intended for real use should make those relationships inspectable and their human correction possible, while measuring whether it reduces rather than relocates the operator's burden.
+This project asked whether three readily available checks could show if a researcher's intended meaning was preserved in AI-assisted work. Model agreement could not: across five raters from five developers, within-half-point agreement on the same excerpts ranged from none to complete depending on the pair and field, and nothing anchored it to what the researcher meant. Working code could not either: the monitoring and gating frameworks ran together, but a single model judge rated every setup near the ceiling. Both checks indicate whether outputs are consistent with one another or with a rubric, not whether they match what a person meant.
 
+The slips that were caught were caught by a person. In each recorded episode, the researcher noticed that something had drifted, named it, and supplied a correction or boundary; the dated record kept that correction traceable afterward. The work of checking meaning was human, and the records made it auditable. This suggests a design target for epistemic tools: make each interpretation, commitment, action, and correction visible and open to challenge, and measure whether a tool reduces the operator's burden of correction or only relocates it.
+
+These are observations from one researcher, small samples, and one sprint. Testing the proposal would require several operators, prospectively selected tasks, human reference ratings, chance-corrected agreement, and evaluations that score whether agents state their interpretation before acting. Until such evidence exists, in settings like this one, model-based checks are better treated as checks on consistency than as checks on meaning.
 \section*{Code and Data}
 Sprint code, tests, protocol, and paper source: \url{https://github.com/Ambercontinuum/ai-epistemics-sprint}; its README marks pre-existing work and its manifest discloses post-run edits. Framework sources are cited at pinned commits. The private archive and case-level outputs are not public. The Adaption training launch is recorded separately; its base checkpoint, exact job recipe, and serving configuration remain insufficiently verified for a trained-model claim here.
 
@@ -194,7 +173,7 @@ The results concern a private, single-operator deployment and constructed coordi
 
 \textbf{Misuse and operator autonomy.} A system that models intent can also steer, manipulate, or misrepresent it. Authority tracking should not become an excuse to suppress warranted disagreement or to present a model's interpretation as the human's authentic preference. Numerical coupling or recovery scores can create unjustified legitimacy. The original state labels are proxies and must remain contestable. An institution could misuse a coherence score to penalize dissent; no such use is supported by this pilot.
 
-\textbf{Enforcement boundary.} Virtual actions demonstrate confinement under the tested interface, not production security. Default guardian/environment inputs are assumptions about that interface. Deployment posture selection is not itself a proof that a tool invocation is safe. The newly written adapter enforces a deliberately narrower virtual push policy. Local hashes and append-only conventions are not externally anchored signatures or tamper-proof provenance.
+\textbf{Enforcement boundary.} Virtual actions demonstrate confinement under the tested interface, not production security. Local hashes and append-only conventions are not externally anchored signatures or tamper-proof provenance.
 
 \textbf{Researcher position.} The researcher developed the frameworks, supplied the corpus, operated the collaboration, and proposes the interpretation. That access supplies context and also creates selection and confirmation risks. The selected vignettes are illustrative and retrospective. Model-generated judgments do not remove those risks or replace independent human assessment.
 
@@ -212,7 +191,7 @@ Spending stop and manuscript & Later sprint work: local OpenAI request guard and
 \end{tabularx}
 
 \section{Reproduction and Interpretation Details}\label{app:reproduction}
-\textbf{Source pins.} PDOT: \model{172b1158468d0be6e010c1627cb77c5155536161}; STK-Flux: \model{73cfa6ba51801af8d21b7bdc822819aa41033650}; STK-Teams: \model{21afd36fe41af04806ed1576c4e66ca7068bf0c1}; SERAPH: \model{4ee7d3044a945cbad30a8cd4230e327ba463187f}. The pinned PDOT guide SHA-256 is \model{1453f3efba8fbce50ffabf2c5c8256ee9d3d9f1438b26480bbd8b08ce0bb504e}. The PDOT, Teams, and SERAPH pins predate the sprint. STK-Flux was repinned during the sprint to a documentation/comment cleanup; the recorded Python source bytes and non-comment Lean logic were unchanged.
+\textbf{Source pins.} PDOT: \model{172b1158468d0be6e010c1627cb77c5155536161}; STK-Flux: \model{73cfa6ba51801af8d21b7bdc822819aa41033650}; STK-Teams: \model{21afd36fe41af04806ed1576c4e66ca7068bf0c1}; SERAPH: \model{4ee7d3044a945cbad30a8cd4230e327ba463187f}. The pinned PDOT guide SHA-256 is \model{1453f3efba8fbce50ffabf2c5c8256ee9d3d9f1438b26480bbd8b08ce0bb504e}. The PDOT, Teams, and SERAPH pins predate the sprint. STK-Flux was repinned during the sprint to a documentation-only change.
 
 \textbf{Archive seeds.} Sort eligible conversation identifiers by SHA-256 of \model{pdot-private-pilot-v1-2026-11-14}, a newline, and the source identifier; select 50. Sort the 50 sample identifiers using \model{pdot-packet-v1} plus newline plus sample identifier; select 20. Select the ten overlap cases with \model{pdot-alite-bot-overlap-v1-2026-11-15} plus newline plus case identifier. Identifiers and maps remain private; this describes selection rather than authorizing their release.
 
@@ -222,7 +201,14 @@ Spending stop and manuscript & Later sprint work: local OpenAI request guard and
 
 \textbf{Failure and normalization policy.} Strict failure is retained even when the whole inner JSON is recoverable. Archive Qwen has 16 strict and 20 normalized records; the designated overlap has seven strict and ten normalized pairs. All four integrated-pilot final responses failed strict parsing and appear only in the approved derivative. Removal was limited to one complete outer Markdown fence, with inner bytes retained and hashed. The first sandbox's comparison also generated excluded equation/CCS statements; these were flagged and not adopted. No hidden retry, substituted zero, retroactive successful strict parse, or newly computed composite is reported.
 
-\textbf{Source implementation boundary.} STK-Flux's inspected Lean implementation contains a Sentinel commitment veto absent from its Python step. The integration uses the Python router and separate SERAPH recovery posture function; no equivalence is asserted. The PDOT subset reuses its ontology definitions, data classes, and fixed transform. Its old client/NumPy clipping and embedding/composite pipeline were not executed. Unit conversion, PRP adaptation to operator rounds, and the final virtual-push gate are explicit new adapters. Model-derived state is neither calibrated telemetry nor a direct reading of cognition.
+
+\textbf{Rubric fields} (from the pinned PDOT rater guide; each scored 0--4 at the session level). $\lambda$, anchoring: how consistently the model tracks and preserves operator intent. $\kappa$, coherence: how stable the shared conceptual map is across the window. $\theta$, agency balance: whether the model contributes structure without replacing operator authority. $\epsilon$, drift: how far the session has moved from operator intent, counting recurring patterns after correction. Symbolic pressure: how much novel framing is present without yet being integrated; higher means more unintegrated framing, not lower quality. \textit{R}, resonance: how well responses match and extend the operator's intent. $\tau$, torsion: how often the model contradicts earlier statements or violates stated constraints.
+
+\textbf{Sandbox wiring.} In the integrated setup, four pieces of code ran. Fable rated each completed round with the PDOT rubric. PDOT's transform converted those ratings into the coupling signals that STK-Teams uses for routing. SERAPH's posture selector read the recovery ratings and decided whether the virtual push path was open; it ran on SERAPH's default guardian and environment inputs, so its decisions reflect those defaults rather than measurements. A new gate allowed a virtual push only with operator permission, an open path, and an STK commit decision based on current measurements. STK-only used prespecified synthetic states instead of measurements. Other parts of these frameworks were not run. Calls were capped at 54 participant, six monitor, and four final-evaluation calls, with no retries or fallback models. The first three Qwen final calls rated masked episodes; the fourth compared them. Framework language could reveal condition, so masking was partial. The judge's seven-field definitions were fixed before outputs existed. Ten synthetic confinement and integration checks passed before the run; five require the private vendored source snapshot.
+
+\textbf{Earlier two-arm pilot.} A first replay used six scripted rounds and three role slots, comparing common instructions with added STK-Flux guidance (36 participant calls, three Qwen evaluation calls). Its single evaluation showed no clear advantage. Its comparison also produced equation and CCS statements, which were flagged and not adopted.
+
+\textbf{Deployment cost.} The three-arm run made 36 Astra calls totalling 294,076 input and 18,822 output tokens in local receipts. After the researcher reported unexpectedly high charges, further OpenAI use was blocked by a spending guard added after the study, which was not part of the tested intervention. This illustrates the difference between a request-count cap and an operator-approved monetary budget.
 
 \textbf{Artifact identities.} The initial sandbox specification hash is \model{1fc0803d9aa2daa66b2e7d360773b5fb4e4ec0fdfbc0d66c9ba806170a1a67fd}. The integrated specification hash is \model{2dfcba701cb6e4ea9200efdf3a4c3777378c165c9da3514bc92418417283b825}. Private manifests bind source bytes, request bytes, raw responses, derivatives, and executed source snapshots. Current guarded source differs from the archived pre-stop execution source; the latter is retained. Public-source commits identify inspected implementation, not review approval or scientific validity.
 
@@ -261,72 +247,90 @@ Wonder--Qwen & $\kappa$ & 7 & 28.6 & 100.0 & 0.36 & 10 & 40.0 & 100.0 & 0.30 \\
 Wonder--Qwen & $\theta$ & 7 & 42.9 & 71.4 & 0.43 & 10 & 30.0 & 80.0 & 0.45 \\
 Wonder--Qwen & $\epsilon$ & 7 & 42.9 & 85.7 & 0.36 & 10 & 30.0 & 80.0 & 0.45 \\
 Wonder--Qwen & S. pressure & 7 & 42.9 & 85.7 & 0.36 & 10 & 50.0 & 90.0 & 0.30 \\
-Wonder--Qwen & $R$ & 7 & 42.9 & 100.0 & 0.29 & 10 & 50.0 & 100.0 & 0.25 \\
+Wonder--Qwen & \textit{R} & 7 & 42.9 & 100.0 & 0.29 & 10 & 50.0 & 100.0 & 0.25 \\
 Wonder--Qwen & $\tau$ & 7 & 14.3 & 85.7 & 0.50 & 10 & 40.0 & 90.0 & 0.35 \\ \addlinespace[3pt]
 Gemini--Wonder & $\lambda$ & 5 & 40.0 & 80.0 & 0.40 & 5 & 40.0 & 80.0 & 0.40 \\
 Gemini--Wonder & $\kappa$ & 5 & 20.0 & 40.0 & 0.70 & 5 & 20.0 & 40.0 & 0.70 \\
 Gemini--Wonder & $\theta$ & 5 & 60.0 & 100.0 & 0.20 & 5 & 60.0 & 100.0 & 0.20 \\
 Gemini--Wonder & $\epsilon$ & 5 & 20.0 & 20.0 & 1.00 & 5 & 20.0 & 20.0 & 1.00 \\
 Gemini--Wonder & S. pressure & 5 & 20.0 & 40.0 & 1.30 & 5 & 20.0 & 40.0 & 1.30 \\
-Gemini--Wonder & $R$ & 5 & 40.0 & 80.0 & 0.40 & 5 & 40.0 & 80.0 & 0.40 \\
+Gemini--Wonder & \textit{R} & 5 & 40.0 & 80.0 & 0.40 & 5 & 40.0 & 80.0 & 0.40 \\
 Gemini--Wonder & $\tau$ & 5 & 0.0 & 20.0 & 1.70 & 5 & 0.0 & 20.0 & 1.70 \\ \addlinespace[3pt]
 Gemini--Qwen & $\lambda$ & 6 & 16.7 & 66.7 & 0.58 & 8 & 25.0 & 62.5 & 0.56 \\
 Gemini--Qwen & $\kappa$ & 6 & 33.3 & 83.3 & 0.42 & 8 & 37.5 & 87.5 & 0.38 \\
 Gemini--Qwen & $\theta$ & 6 & 50.0 & 100.0 & 0.25 & 8 & 50.0 & 100.0 & 0.25 \\
 Gemini--Qwen & $\epsilon$ & 6 & 33.3 & 66.7 & 0.58 & 8 & 25.0 & 50.0 & 0.88 \\
 Gemini--Qwen & S. pressure & 6 & 16.7 & 33.3 & 1.08 & 8 & 12.5 & 37.5 & 1.38 \\
-Gemini--Qwen & $R$ & 6 & 33.3 & 100.0 & 0.33 & 8 & 37.5 & 100.0 & 0.31 \\
+Gemini--Qwen & \textit{R} & 6 & 33.3 & 100.0 & 0.33 & 8 & 37.5 & 100.0 & 0.31 \\
 Gemini--Qwen & $\tau$ & 6 & 33.3 & 50.0 & 0.67 & 8 & 25.0 & 37.5 & 1.12 \\ \addlinespace[3pt]
 Gemini--Astra & $\lambda$ & 8 & 0.0 & 25.0 & 0.94 & 8 & 0.0 & 25.0 & 0.94 \\
 Gemini--Astra & $\kappa$ & 8 & 0.0 & 0.0 & 1.38 & 8 & 0.0 & 0.0 & 1.38 \\
 Gemini--Astra & $\theta$ & 8 & 12.5 & 25.0 & 0.88 & 8 & 12.5 & 25.0 & 0.88 \\
 Gemini--Astra & $\epsilon$ & 8 & 0.0 & 12.5 & 1.81 & 8 & 0.0 & 12.5 & 1.81 \\
 Gemini--Astra & S. pressure & 8 & 0.0 & 12.5 & 2.06 & 8 & 0.0 & 12.5 & 2.06 \\
-Gemini--Astra & $R$ & 8 & 0.0 & 50.0 & 0.75 & 8 & 0.0 & 50.0 & 0.75 \\
+Gemini--Astra & \textit{R} & 8 & 0.0 & 50.0 & 0.75 & 8 & 0.0 & 50.0 & 0.75 \\
 Gemini--Astra & $\tau$ & 8 & 0.0 & 0.0 & 2.12 & 8 & 0.0 & 0.0 & 2.12 \\ \addlinespace[3pt]
 Gemini--Fable & $\lambda$ & 8 & 0.0 & 75.0 & 0.62 & 8 & 0.0 & 75.0 & 0.62 \\
 Gemini--Fable & $\kappa$ & 8 & 0.0 & 12.5 & 1.06 & 8 & 0.0 & 12.5 & 1.06 \\
 Gemini--Fable & $\theta$ & 8 & 37.5 & 75.0 & 0.50 & 8 & 37.5 & 75.0 & 0.50 \\
 Gemini--Fable & $\epsilon$ & 8 & 12.5 & 25.0 & 1.06 & 8 & 12.5 & 25.0 & 1.06 \\
 Gemini--Fable & S. pressure & 8 & 0.0 & 50.0 & 1.44 & 8 & 0.0 & 50.0 & 1.44 \\
-Gemini--Fable & $R$ & 8 & 0.0 & 75.0 & 0.62 & 8 & 0.0 & 75.0 & 0.62 \\
+Gemini--Fable & \textit{R} & 8 & 0.0 & 75.0 & 0.62 & 8 & 0.0 & 75.0 & 0.62 \\
 Gemini--Fable & $\tau$ & 8 & 0.0 & 25.0 & 1.31 & 8 & 0.0 & 25.0 & 1.31 \\ \addlinespace[3pt]
 Wonder--Astra & $\lambda$ & 10 & 40.0 & 80.0 & 0.40 & 10 & 40.0 & 80.0 & 0.40 \\
 Wonder--Astra & $\kappa$ & 10 & 30.0 & 40.0 & 0.70 & 10 & 30.0 & 40.0 & 0.70 \\
 Wonder--Astra & $\theta$ & 10 & 10.0 & 60.0 & 0.75 & 10 & 10.0 & 60.0 & 0.75 \\
 Wonder--Astra & $\epsilon$ & 10 & 40.0 & 70.0 & 0.50 & 10 & 40.0 & 70.0 & 0.50 \\
 Wonder--Astra & S. pressure & 10 & 30.0 & 70.0 & 0.60 & 10 & 30.0 & 70.0 & 0.60 \\
-Wonder--Astra & $R$ & 10 & 20.0 & 100.0 & 0.40 & 10 & 20.0 & 100.0 & 0.40 \\
+Wonder--Astra & \textit{R} & 10 & 20.0 & 100.0 & 0.40 & 10 & 20.0 & 100.0 & 0.40 \\
 Wonder--Astra & $\tau$ & 10 & 20.0 & 70.0 & 0.60 & 10 & 20.0 & 70.0 & 0.60 \\ \addlinespace[3pt]
 Wonder--Fable & $\lambda$ & 10 & 20.0 & 100.0 & 0.40 & 10 & 20.0 & 100.0 & 0.40 \\
 Wonder--Fable & $\kappa$ & 10 & 40.0 & 80.0 & 0.40 & 10 & 40.0 & 80.0 & 0.40 \\
 Wonder--Fable & $\theta$ & 10 & 10.0 & 80.0 & 0.60 & 10 & 10.0 & 80.0 & 0.60 \\
 Wonder--Fable & $\epsilon$ & 10 & 30.0 & 80.0 & 0.55 & 10 & 30.0 & 80.0 & 0.55 \\
 Wonder--Fable & S. pressure & 10 & 10.0 & 90.0 & 0.50 & 10 & 10.0 & 90.0 & 0.50 \\
-Wonder--Fable & $R$ & 10 & 20.0 & 100.0 & 0.40 & 10 & 20.0 & 100.0 & 0.40 \\
+Wonder--Fable & \textit{R} & 10 & 20.0 & 100.0 & 0.40 & 10 & 20.0 & 100.0 & 0.40 \\
 Wonder--Fable & $\tau$ & 10 & 40.0 & 100.0 & 0.30 & 10 & 40.0 & 100.0 & 0.30 \\ \addlinespace[3pt]
 Qwen--Astra & $\lambda$ & 16 & 50.0 & 93.8 & 0.28 & 20 & 45.0 & 90.0 & 0.33 \\
 Qwen--Astra & $\kappa$ & 16 & 12.5 & 50.0 & 0.78 & 20 & 20.0 & 50.0 & 0.78 \\
 Qwen--Astra & $\theta$ & 16 & 25.0 & 62.5 & 0.59 & 20 & 30.0 & 60.0 & 0.57 \\
 Qwen--Astra & $\epsilon$ & 16 & 18.8 & 50.0 & 0.81 & 20 & 20.0 & 60.0 & 0.72 \\
 Qwen--Astra & S. pressure & 16 & 0.0 & 81.2 & 0.66 & 20 & 10.0 & 75.0 & 0.62 \\
-Qwen--Astra & $R$ & 16 & 50.0 & 87.5 & 0.31 & 20 & 50.0 & 90.0 & 0.30 \\
+Qwen--Astra & \textit{R} & 16 & 50.0 & 87.5 & 0.31 & 20 & 50.0 & 90.0 & 0.30 \\
 Qwen--Astra & $\tau$ & 16 & 0.0 & 43.8 & 0.94 & 20 & 5.0 & 55.0 & 0.82 \\ \addlinespace[3pt]
 Qwen--Fable & $\lambda$ & 16 & 50.0 & 100.0 & 0.25 & 20 & 40.0 & 100.0 & 0.30 \\
 Qwen--Fable & $\kappa$ & 16 & 25.0 & 68.8 & 0.53 & 20 & 25.0 & 65.0 & 0.57 \\
 Qwen--Fable & $\theta$ & 16 & 31.2 & 68.8 & 0.53 & 20 & 40.0 & 70.0 & 0.47 \\
 Qwen--Fable & $\epsilon$ & 16 & 37.5 & 87.5 & 0.38 & 20 & 30.0 & 80.0 & 0.47 \\
 Qwen--Fable & S. pressure & 16 & 50.0 & 100.0 & 0.25 & 20 & 50.0 & 100.0 & 0.25 \\
-Qwen--Fable & $R$ & 16 & 37.5 & 93.8 & 0.34 & 20 & 40.0 & 95.0 & 0.33 \\
+Qwen--Fable & \textit{R} & 16 & 37.5 & 93.8 & 0.34 & 20 & 40.0 & 95.0 & 0.33 \\
 Qwen--Fable & $\tau$ & 16 & 43.8 & 93.8 & 0.34 & 20 & 35.0 & 95.0 & 0.38 \\ \addlinespace[3pt]
 Astra--Fable & $\lambda$ & 20 & 45.0 & 100.0 & 0.28 & 20 & 45.0 & 100.0 & 0.28 \\
 Astra--Fable & $\kappa$ & 20 & 50.0 & 100.0 & 0.25 & 20 & 50.0 & 100.0 & 0.25 \\
 Astra--Fable & $\theta$ & 20 & 40.0 & 90.0 & 0.35 & 20 & 40.0 & 90.0 & 0.35 \\
 Astra--Fable & $\epsilon$ & 20 & 15.0 & 55.0 & 0.65 & 20 & 15.0 & 55.0 & 0.65 \\
 Astra--Fable & S. pressure & 20 & 10.0 & 65.0 & 0.62 & 20 & 10.0 & 65.0 & 0.62 \\
-Astra--Fable & $R$ & 20 & 65.0 & 100.0 & 0.17 & 20 & 65.0 & 100.0 & 0.17 \\
+Astra--Fable & \textit{R} & 20 & 65.0 & 100.0 & 0.17 & 20 & 65.0 & 100.0 & 0.17 \\
 Astra--Fable & $\tau$ & 20 & 5.0 & 25.0 & 0.85 & 20 & 5.0 & 25.0 & 0.85 \\ \addlinespace[3pt]
 \end{longtable}
 \endgroup
+
+\begin{table}[htbp]
+\centering\small
+\caption{Per-rater mean (standard deviation) by field, strict parses. Raters scored different case subsets (Gemini 8, Wonder 10, Qwen 16, Astra 20, Fable 20), so means are not directly comparable across raters.}
+\label{tab:raterdist}
+{\setlength{\tabcolsep}{3pt}\footnotesize
+\begin{tabular}{@{}lrrrrrrrr@{}}
+\toprule
+Rater & $n$ & $\lambda$ & $\kappa$ & $\theta$ & $\epsilon$ & S. pressure & \textit{R} & $\tau$ \\
+\midrule
+Gemini & 8 & 3.56 (0.42) & 3.44 (0.56) & 2.88 (0.64) & 0.81 (0.96) & 1.25 (1.22) & 3.56 (0.42) & 0.69 (0.84) \\
+Wonder & 10 & 2.75 (0.59) & 2.25 (0.72) & 2.35 (0.71) & 2.55 (0.69) & 3.15 (0.71) & 2.70 (0.63) & 2.80 (0.48) \\
+Qwen & 16 & 2.78 (0.36) & 2.72 (0.71) & 2.69 (0.54) & 1.91 (0.86) & 2.84 (0.72) & 2.94 (0.48) & 2.09 (0.97) \\
+Astra & 20 & 2.55 (0.48) & 1.95 (0.46) & 2.02 (0.47) & 2.73 (0.47) & 3.60 (0.66) & 2.70 (0.38) & 3.10 (0.72) \\
+Fable & 20 & 2.83 (0.47) & 2.15 (0.52) & 2.12 (0.51) & 2.08 (0.52) & 2.98 (0.73) & 2.88 (0.43) & 2.25 (0.66) \\
+\bottomrule
+\end{tabular}}
+\end{table}
 
 \end{document}

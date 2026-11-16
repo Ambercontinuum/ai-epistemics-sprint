@@ -1,22 +1,14 @@
-\begin{thebibliography}{9}
+\begin{thebibliography}{8}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem[{AmberContinuum Research}(2026{\natexlab{a}})]{coordinationrecords}
-{AmberContinuum Research}.
-\newblock {AI x Epistemics} sprint coordination and execution records.
-\newblock Dated operational records, November 14--15, 2026{\natexlab{a}}.
-\newblock Selected shared coordination notes and separate private sandbox
-  manifests. Not a complete session export or an independently coded
-  qualitative dataset. Access and release controlled by the author.
-
-\bibitem[{AmberContinuum Research}(2026{\natexlab{b}})]{seraph}
+\bibitem[{AmberContinuum Research}(2026)]{seraph}
 {AmberContinuum Research}.
 \newblock {SERAPH-1.0}: Runtime governance and recovery components.
-\newblock Public source repository, 2026{\natexlab{b}}.
+\newblock Public source repository, 2026.
 \newblock URL
   \url{https://github.com/Ambercontinuum/SERAPH-1.0/tree/4ee7d3044a945cbad30a8cd4230e327ba463187f}.
 \newblock Pinned revision 4ee7d30.

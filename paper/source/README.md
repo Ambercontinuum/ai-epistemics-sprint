@@ -1,6 +1,6 @@
 # LaTeX source
 
-Amber Anson — *Preserving Human Intent in AI-Assisted Research: A Deployment Case Study and Coordination-Stack Pilot*. AI x Epistemics Research Sprint, November 2026. Final submitted version: 8 main pages, 14 pages in total.
+Amber Anson — *Preserving Human Intent in AI-Assisted Research: Human Corrections and the Limits of Model-Based Verification*. AI x Epistemics Research Sprint, November 2026. Final submitted version: 7 main pages, 15 pages in total.
 
 ## Build
 
@@ -10,7 +10,7 @@ From this directory:
 tectonic --keep-logs --keep-intermediates main.tex
 ```
 
-Alternatively, run XeLaTeX, then BibTeX, then XeLaTeX twice. The Old Standard TT fonts and their license are included. A first Tectonic build may download ordinary TeX packages. No model APIs are used.
+Alternatively, run XeLaTeX, then BibTeX, then XeLaTeX twice. The Old Standard TT fonts and their license are included; math uses Latin Modern Math from the TeX distribution. A first Tectonic build may download ordinary TeX packages. No model APIs are used.
 
 ## About the template
 
