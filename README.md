@@ -53,4 +53,4 @@ AI systems assisted with planning, code, coordination, rating, review, and draft
 
 ## License
 
-No license has been granted yet; all rights are reserved pending the author's decision. The pinned framework repositories keep their own licenses and contributor attribution.
+Licensed under the MIT License — see [LICENSE](LICENSE) for the full text. The pinned framework repositories keep their own licenses and contributor attribution.
