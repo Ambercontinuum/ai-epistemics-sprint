@@ -49,7 +49,7 @@ Aggregate agreement tables appear only in the paper.
 
 ## Use of AI systems
 
-AI systems assisted with planning, code, and drafting, as described in the paper's LLM usage statement (Appendix D). No AI system is an author.
+AI systems assisted with planning, code, coordination, rating, review, and drafting. [`AI-USAGE.md`](AI-USAGE.md) lists each system, its developer, and its role; the paper's Appendix D summarizes them. No AI system is an author.
 
 ## License
 

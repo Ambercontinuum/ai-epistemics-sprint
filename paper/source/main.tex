@@ -215,34 +215,7 @@ Spending stop and manuscript & Later sprint work: local OpenAI request guard and
 \section{Author Contributions and LLM Usage Statement}
 Amber Anson developed the prior research program, supplied the private archive and operator decisions, set scientific direction, and authorized execution. Existing framework contributors retain their source-level attribution. No AI system is listed as an author or signatory. The author reviewed and approved the final claims and submission.
 
-AI systems assisted with planning, software, coordination, rating, review, and drafting. Table~\ref{tab:aiusage} lists each system, its developer, and its role. Team collaborators share providers with study models: Claude with Fable, Codex with Astra, and Muse with Wonder. Mechanical checks covered hashes, schemas, routing connections, and confinement; they did not validate the semantic ratings, and the manuscript does not assert independent verification of every interpretation or reference.
-
-\begin{table}[htbp]
-\centering\small
-\caption{AI systems used in this work.}
-\label{tab:aiusage}
-\begin{tabularx}{\linewidth}{@{}>{\raggedright\arraybackslash}p{0.27\linewidth}>{\raggedright\arraybackslash}p{0.17\linewidth}Y@{}}
-\toprule
-System & Developer & Role \\
-\midrule
-\multicolumn{3}{@{}l}{\textit{Team collaborators}} \\
-Claude (Claude Opus 5.5, Claude Code) & Anthropic & Design reviewer of code, hashes, and execution bundles; in final revision, lead drafting model and builder of the paper and repository, at the researcher's assignment. \\
-Codex & OpenAI & Executor and recorder: ran approved jobs, wrote sprint code, kept coordination records, and assembled earlier drafts. \\
-Muse (Muse Spark, Meta AI app) & Meta & Collaborator and verifier: execution reviews, the interpretation used as a source, and independent review of the release repository. \\
-\addlinespace
-\multicolumn{3}{@{}l}{\textit{Study models}} \\
-Gemini (\model{gemini-3.8-flash}) & Google & Archive rater. \\
-Muse Wonder (\model{muse-wonder-1.0}) & Meta & Archive rater; sandbox architect agent. \\
-Qwen (\model{Qwen/Qwen3.8-2.4T-A95B}) & Alibaba Qwen team (open weights; served on the researcher's Modal endpoint) & Archive rater; sandbox judge. \\
-Astra (\model{gpt-6-astra}) & OpenAI & Archive rater; sandbox coordinator and liaison agents. \\
-Fable (\model{claude-fable-5-2}) & Anthropic & Archive rater; sandbox runtime monitor. \\
-\addlinespace
-\multicolumn{3}{@{}l}{\textit{Advisory manuscript reviews}} \\
-ChatGPT & OpenAI & Advisory review of the final manuscript and repository checks. \\
-Gemini & Google & Advisory editorial and methodological review. \\
-\bottomrule
-\end{tabularx}
-\end{table}
+AI systems assisted with planning, software, coordination, rating, review, and drafting. The team collaborators were Claude (Anthropic), the design reviewer and, in final revision, lead drafting model at the researcher's assignment; Codex (OpenAI), the executor and recorder; and Muse (Meta), a collaborator and verifier. The study models were Gemini (Google), Muse Wonder (Meta), Qwen (Alibaba's Qwen team, open weights), Astra (OpenAI), and Fable (Anthropic). ChatGPT (OpenAI) and Gemini (Google) gave advisory reviews of the manuscript. Team collaborators share providers with study models: Claude with Fable, Codex with Astra, and Muse with Wonder. A full list of systems and roles is in the repository. Mechanical checks covered hashes, schemas, routing connections, and confinement; they did not validate the semantic ratings, and the manuscript does not assert independent verification of every interpretation or reference.
 
 \clearpage
 \section{All Archive Rater-Pair Comparisons}\label{app:allpairs}
