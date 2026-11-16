@@ -1,0 +1,17 @@
+{
+  "main.tex": "f27b5a6cb977284fa246fd05da0fd46457d4b91edfb43b430999bba493aa0dc2",
+  "apart_sprint.sty": "d995c4451514f031749a941c80a587b77ebf57aa7e39f6519eca47e57563f8d9",
+  "references.bib": "e11a6966cf5623fe6470d0063e4905b206abad436f9501a69fdb6c02186a4b77",
+  "latexmkrc": "93e89a1db80408a369e62308c701e5e782f0fac3df0d0689349610ae35881616",
+  "main.bbl": "2081dbb3ec3b03dfecb16f0616a104244690bfbba7a97cd4cbfd328345df2e8b",
+  "fonts/OldStandard-Regular.ttf": "42717a1280b523a506ca2b0285cca380e77fe214b1f6e3d75a8b925005f19eac",
+  "fonts/OldStandard-Bold.ttf": "7d831e9d799ad23ee98e889381a9db2a283b2dac7f228dd5c06071decb9c54db",
+  "fonts/OldStandard-Italic.ttf": "4b9522f4711317fc06e2413a58b4662c249cb707df193d682b9d640e365ef564",
+  "fonts/OFL.txt": "4faa2d9e2ce0a4b5b37e62ee6fafe474a539b31578f7214ed97cc3503aeb8ebd",
+  "fonts/SOURCE.json": "646b618532fb5f48de9cbc75713e98a5e19685c0fd1b6b28899afdab0b1553a8",
+  "tables/primary-agreement.tex": "5e9c347ef249439d581ec5657b4d89c2126601f4727edae689c6bf9524df50d8",
+  "tables/stack-ratings.tex": "47b06f3b7ee76272e6561b07194ed794ee051414ef1c9e6719d8182d2bea52e8",
+  "tables/all-rater-pairs.tex": "08ea00cd50da3db0f9b6866ea2090b153fb33ea10921835e38bb88b273b841db",
+  "template/official-apart-template.pdf": "2e4c5b10361d9a9416fed2a7c0b3b917c6fefaa288caea4089f0081b40accd10",
+  "README.md": "9eb792b513f1ef22f957e1b90358667f45b016a469f998ac97cdff241a580505"
+}
