@@ -1,6 +1,6 @@
 # LaTeX source
 
-Amber Anson — *Preserving Human Intent in AI-Assisted Research: Human Corrections and the Limits of Model-Based Verification*. AI x Epistemics Research Sprint, November 2026. Final submitted version: 8 main pages, 16 pages in total.
+Amber Anson — *Preserving Human Intent in AI-Assisted Research: Human Corrections and the Limits of Model-Based Verification*. AI x Epistemics Research Sprint, November 2026. Final submitted version: 7 main pages, 15 pages in total.
 
 ## Build
 
